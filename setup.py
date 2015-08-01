@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='litelog',
-    version='0.1.2',
+    version='0.1.3',
     author='Matthew Cotton',
     author_email='matt@thecottons.com',
     packages=[
