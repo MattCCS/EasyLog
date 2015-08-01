@@ -8,10 +8,10 @@ setup(
     packages=[
         'litelog',
     ],
-    # scripts=['bin/stowe-towels.py','bin/wash-towels.py'],
+    # scripts=[],
     url='http://pypi.python.org/pypi/litelog/',
     license='LICENSE.txt',
     description='Simplified, robust, selective, recursive logging utility for Python.',
-    long_description=open('README.txt').read(),
+    # long_description=open('README.txt').read(),
     install_requires=[],
 )
