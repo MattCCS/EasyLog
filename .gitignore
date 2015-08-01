@@ -2,4 +2,8 @@
 *.log
 *.log.*
 *.tar.gz
-README.txt
+/README.txt
+/MANIFEST
+/MANIFEST.in
+/__init__.py
+
