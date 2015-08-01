@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='litelog',
-    version='0.1.3',
+    version='0.1.4',
     author='Matthew Cotton',
     author_email='matt@thecottons.com',
     packages=[
@@ -12,6 +12,6 @@ setup(
     url='http://pypi.python.org/pypi/litelog/',
     license='LICENSE.txt',
     description='Simplified, robust, selective, recursive logging utility for Python.',
-    # long_description=open('README.txt').read(),
+    long_description=open('README.txt').read(),
     install_requires=[],
 )
