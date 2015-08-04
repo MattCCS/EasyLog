@@ -7,8 +7,7 @@ Features
 --------
 
     * automatically-named per-file logfiles, specifically written next to the source files.
-    * special __debug__ log, where tagged functions can have all of their input/output/errors
-      safely reported completely transparently and without interference.
+    * special __debug__ log, where tagged functions can have all of their input/output/errors safely reported completely transparently and without interference.
     * different log message levels, just like the 'logging' builtin.
     * recursive calls in __debug__ are indented, so determining function call depth is natural.
 
@@ -44,12 +43,9 @@ The following is copy-and-pasteable code, so long as litelog is available global
 
 When pasted at the top of your program, the above lines:
 
-    * create a logger specifically for the current file, with the same name
-      (ex:  test.py -> test.log)
-    * add a starting line/delimiter to the log, to indicate separate module imports/runs
-      (by default, the logs are *appended* to)
-    * creates an optional global "debug" logger, which can record the I/O/Errors of
-      any function tagged with '@litelog.logwrap' (set_debug() should only be called once)
+    * create a logger specifically for the current file, with the same name (ex:  test.py -> test.log)
+    * add a starting line/delimiter to the log, to indicate separate module imports/runs (by default, the logs are *appended* to)
+    * creates an optional global "debug" logger, which can record the I/O/Errors of any function tagged with '@litelog.logwrap' (set_debug() should only be called once)
 
 Here are the actual use case examples:
 
