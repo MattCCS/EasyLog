@@ -6,3 +6,4 @@ v0.1.4, 8-1-15 -- Testing PyPI Markdown hack
 v0.1.5, 8-1-15 -- Testing different PyPI Markdown hack
 v0.1.6, 8-1-15 -- Simpler project structure
 v0.2.0, 8-4-15 -- First stable version; tested with multi-file logs (both __debug__ and regular)
+v0.2.1, 8-4-15 -- Correcting docs for PyPI test 1
