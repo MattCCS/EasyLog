@@ -45,7 +45,7 @@ When pasted at the top of your program, the above lines:
 
 - create a logger specifically for the current file, with the same name (ex:  test.py -> test.log)
 - add a starting line/delimiter to the log, to indicate separate module imports/runs (by default, the logs are *appended* to)
-- creates an optional global "debug" logger, which can record the I/O/Errors of any function tagged with '@litelog.logwrap' (set_debug() should only be called once)
+- creates an optional global "debug" logger, which can record the I/O/Errors of any function tagged with '\@litelog.logwrap' (set_debug() should only be called once)
 
 Here are the actual use case examples::
 
