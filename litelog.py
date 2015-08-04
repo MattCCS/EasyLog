@@ -6,14 +6,18 @@ will usually include lines such as the following at the top:
     ####################################
     # SETTING UP THE LOGGER
     import os
-    from litelog import log
+    from LiteLog import litelog
     ROOTPATH = os.path.splitext(__file__)[0]
     LOGPATH = "{0}.log".format(ROOTPATH) # this simply specifies the absolute path -- feel free to change this.
-    LOGGER = log.get(__name__, path=LOGPATH)
+    LOGGER = litelog.get(__name__, path=LOGPATH)
     LOGGER.info("----------BEGIN----------")
+
+    # do the following step if you want
+    # a global 'debug' log file:
+    litelog.set_debug(__file__)
     ####################################
 
-    @log.logwrap # <--- do this if you want a __debug__.log to record I/O/Error of function calls
+    @litelog.logwrap # <--- do this if you want a __debug__.log to record I/O/Error of function calls
     def f():
         ...
         LOGGER.info('just a test') # <--- do this if you want to log custom
@@ -50,16 +54,18 @@ _DEBUG_LOG_PATH = None
 _META_LOGGER    = None
 _FIRST          = True
 
-def set_debug(pyfile_obj):
+def set_debug(pyfile_obj, meta_logger=True):
     """Puts __debug__.log next to the provided Python __file__"""
     path = os.path.realpath(pyfile_obj)
-    set_debug_by_path(path)
+    set_debug_by_path(path, meta_logger=meta_logger)
 
-def set_debug_by_path(path):
+def set_debug_by_path(path, meta_logger=True):
     """Puts __debug__.log in the given directory"""
     global _DEBUG_LOG_PATH
     path = os.path.join(path, '') # enfore trailing <SEP>
-    _DEBUG_LOG_PATH = os.path.join(os.path.dirname(path), "__debug__.log")
+    _DEBUG_LOG_PATH = os.path.join(os.path.dirname(os.path.dirname(path)), "__debug__.log")
+    if meta_logger:
+        _create_meta_logger()
 
 def _create_meta_logger():
     """
@@ -67,11 +73,17 @@ def _create_meta_logger():
 
     Please only call this once... ?
     """
-    if _DEBUG_LOG_PATH is None:
-        raise RuntimeError("_DEBUG_LOG_PATH not set!  Can't create meta-logger.")
 
     global _META_LOGGER
-    _META_LOGGER = get("__debug__", _DEBUG_LOG_PATH, allow_logpy_recursions=True) # !!!
+
+    if _DEBUG_LOG_PATH is None:
+        raise RuntimeError("_DEBUG_LOG_PATH not set!  Can't create meta-logger.")
+    elif _META_LOGGER is not None:
+        # _META_LOGGER already exists!  Refusing to create a new one
+        return
+
+    parent = os.path.dirname(_DEBUG_LOG_PATH)
+    _META_LOGGER = get("__debug__", _DEBUG_LOG_PATH, is_debug_log=True) # !!!
 
 ####################################
 
@@ -86,10 +98,18 @@ class MattsCustomFormatter(logging.Formatter):
     # SOURCE: http://stackoverflow.com/questions/9212228/using-custom-formatter-classes-with-pythons-logging-config-module
     # SOURCE: http://code.activestate.com/recipes/412603-stack-based-indentation-of-formatted-logging/
 
-    def __init__( self, fmt=None, datefmt=None, allow_logpy_recursions=False ):
+    def __init__( self, name, fmt=None, datefmt=None, is_debug_log=False ):
         logging.Formatter.__init__(self, fmt, datefmt)
-        self.baseline = len(inspect.stack()) + 1
-        self.allow_logpy_recursions = allow_logpy_recursions
+        self.name = name
+        self.is_debug_log = is_debug_log
+        self.baseline = self.determine_baseline()
+
+    def determine_baseline(self):
+        stack = inspect.stack()
+        stack = [elems for elems in stack if __file__ not in elems[1]]
+        # for row in stack:
+        #     print row
+        return len(stack)
 
     def format( self, record ):
 
@@ -100,11 +120,20 @@ class MattsCustomFormatter(logging.Formatter):
 
         stack = inspect.stack()
         stack = [e[1] for e in stack]
+        # print "UNMODDED:"
+        # for fi in stack:
+        #     print fi
+        # print "MODDED:"
         stack = [e for e in stack if "Python.framework" not in e]
         stack = [e for e in stack if "logging/__init__.py" not in e]
-        if not self.allow_logpy_recursions:
-            stack = [e for e in stack if "log.py" not in e]
+        stack = [e for e in stack if "litelog.py" not in e]
+        # stack = stack[self.baseline:]
+        # for fi in stack:
+        #     print fi
+        # print "is debug log:", self.is_debug_log
+        # print len(stack), self.baseline
         # print stack
+        # print
         MattsCustomFormatter.STACK = stack
 
         ####################################
@@ -151,7 +180,7 @@ class MattsCustomFormatter(logging.Formatter):
         return output_string
 
 
-def get(name, path='activity.log', allow_logpy_recursions=False):
+def get(name, path='activity.log', is_debug_log=False):
     """
     Returns a logger object so that a given file can log its activity.
     If two loggers are created with the same name, they will output 2x to the same file.
@@ -159,7 +188,7 @@ def get(name, path='activity.log', allow_logpy_recursions=False):
     # SOURCE: http://stackoverflow.com/questions/7621897/python-logging-module-globally
 
     # formatter = IndentFormatter("%(asctime)s [%(levelname)8s] %(module)30s:%(indent)s%(message)s")
-    formatter = MattsCustomFormatter("{asctime} [{levelname:8}] {module} :{indent} {message}", allow_logpy_recursions=allow_logpy_recursions)
+    formatter = MattsCustomFormatter(name, "{asctime} [{levelname:8}] {module} :{indent} {message}", is_debug_log=is_debug_log)
     handler = RotatingFileHandler(path, maxBytes=1024 * 100, backupCount=3)
     handler.setFormatter(formatter)
 

@@ -1,1 +1,3 @@
-- add USAGE to README
+- additional documentation
+- clean up code!
+- TESTS
