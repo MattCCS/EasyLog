@@ -25,7 +25,9 @@ To install locally (such as within a virtual environment), run::
 Usage
 -----
 
-The following is copy-and-pasteable code, so long as litelog is available globally::
+The following is copy-and-pasteable code, so long as litelog is available globally:
+
+.. code:: python
 
     ####################################
     # SETTING UP THE LOGGER
@@ -47,7 +49,9 @@ When pasted at the top of your program, the above lines:
 - add a starting line/delimiter to the log, to indicate separate module imports/runs (by default, the logs are *appended* to)
 - creates an optional global "debug" logger, which can record the I/O/Errors of any function tagged with '\@litelog.logwrap' (set_debug() should only be called once)
 
-Here are the actual use case examples::
+Here are the actual use case examples:
+
+.. code:: python
 
     @litelog.logwrap # <--- do this if you want a __debug__.log to record I/O/Error of function calls
     def f():
