@@ -4,6 +4,5 @@
 *.tar.gz
 /README.txt
 /MANIFEST
-/MANIFEST.in
 /__init__.py
 
